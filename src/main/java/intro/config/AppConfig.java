@@ -1,6 +1,5 @@
 package intro.config;
 
-import intro.dao.MyService;
 import intro.model.User;
 import java.util.Properties;
 import javax.sql.DataSource;
@@ -13,13 +12,9 @@ import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 @Configuration
 @ComponentScan(basePackages = {
         "intro.service",
-        "intro.dao"
+        "intro.dao",
 })
 public class AppConfig {
-    @Bean
-    public MyService getMyService() {
-        return () -> System.out.println("Hello, Human");
-    }
 
     @Bean
     public DataSource getDataSource() {

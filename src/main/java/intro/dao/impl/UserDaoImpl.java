@@ -18,10 +18,16 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public void add(User user) {
-        try (Session session = sessionFactory.openSession()) {
+        Session session = null;
+        try {
+            session = sessionFactory.openSession();
             session.save(user);
         } catch (Exception e) {
             throw new DataProcessingException("Can't save user", e);
+        } finally {
+            if (session != null) {
+                session.close();
+            }
         }
     }
 

@@ -1,7 +1,6 @@
 package intro;
 
 import intro.config.AppConfig;
-import intro.dao.MyService;
 import intro.model.User;
 import intro.service.UserService;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -24,8 +23,5 @@ public class Main {
         userService.add(user5);
         userService.add(user6);
         userService.listUsers().forEach(System.out::println);
-        System.out.println("Tested @Bean annotation below...");
-        MyService bean = context.getBean(MyService.class);
-        bean.sayHello();
     }
 }

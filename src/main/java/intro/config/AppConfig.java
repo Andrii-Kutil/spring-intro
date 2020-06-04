@@ -4,25 +4,32 @@ import intro.model.User;
 import java.util.Properties;
 import javax.sql.DataSource;
 import org.apache.commons.dbcp2.BasicDataSource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 
 @Configuration
+@PropertySource("classpath:db.properties")
 @ComponentScan(basePackages = {
         "intro.service",
         "intro.dao",
 })
 public class AppConfig {
 
+    @Autowired
+    private Environment env;
+
     @Bean
     public DataSource getDataSource() {
         BasicDataSource dataSource = new BasicDataSource();
-        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        dataSource.setUrl("jdbc:mysql://localhost/intro?serverTimezone=UTC");
-        dataSource.setUsername("root");
-        dataSource.setPassword("MateAcademy2020");
+        dataSource.setDriverClassName(env.getProperty("db.driver"));
+        dataSource.setUrl(env.getProperty("db.url"));
+        dataSource.setUsername(env.getProperty("db.username"));
+        dataSource.setPassword(env.getProperty("db.password"));
         return dataSource;
     }
 
@@ -30,11 +37,10 @@ public class AppConfig {
     public LocalSessionFactoryBean getSessionFactory() {
         LocalSessionFactoryBean factoryBean = new LocalSessionFactoryBean();
         factoryBean.setDataSource(getDataSource());
-
         Properties properties = new Properties();
-        properties.put("hibernate.show_sql", "true");
-        properties.put("hibernate.hbm2ddl.auto", "create-drop");
-        properties.put("hibernate.dialect", "org.hibernate.dialect.MySQL8Dialect");
+        properties.put("hibernate.show_sql", env.getProperty("hibernate.show_sql"));
+        properties.put("hibernate.hbm2ddl.auto", env.getProperty("hibernate.hbm2ddl.auto"));
+        properties.put("hibernate.dialect", env.getProperty("hibernate.dialect"));
         factoryBean.setHibernateProperties(properties);
         factoryBean.setAnnotatedClasses(User.class);
         return factoryBean;
